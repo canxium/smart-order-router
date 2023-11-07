@@ -2,12 +2,9 @@
 .yalc
 yalc.lock
 .nyc_output
-build
 node_modules
 src/**.js
 coverage
 *.log
-types
-types/*
 .env
 cache/
