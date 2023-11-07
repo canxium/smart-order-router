@@ -63,6 +63,10 @@ const SUBGRAPH_URL_BY_CHAIN: { [chainId in ChainId]?: string } = {
     'https://api.thegraph.com/subgraphs/name/lynnshaoyu/uniswap-v3-avax',
   [ChainId.BASE]: 
     'https://api.studio.thegraph.com/query/48211/uniswap-v3-base/version/latest',
+  [ChainId.CANXIUM]:
+    'https://graph.canxium.net/subgraphs/name/canixum/v3-swap',
+  [ChainId.CANXIUM_CERIUM]:
+    'https://cerium-graph.canxium.net/subgraphs/name/canixum/cerium-v3-uniswap',
 };
 
 const PAGE_SIZE = 1000; // 1k is max possible query size from subgraph.

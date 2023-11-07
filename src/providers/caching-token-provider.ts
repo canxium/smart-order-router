@@ -37,6 +37,8 @@ import {
   USDC_OPTIMISM_GOERLI,
   USDC_POLYGON,
   USDC_SEPOLIA,
+  USDC_CANXIUM,
+  USDC_CANXIUM_CERIUM,
   USDT_ARBITRUM,
   USDT_BNB,
   USDT_MAINNET,
@@ -49,6 +51,8 @@ import {
   WBTC_OPTIMISM_GOERLI,
   WMATIC_POLYGON,
   WMATIC_POLYGON_MUMBAI,
+  WCAU_CANXIUM,
+  WCAU_CANXIUM_CERIUM,
 } from './token-provider';
 
 // These tokens will added to the Token cache on initialization.
@@ -143,7 +147,15 @@ export const CACHE_SEED_TOKENS: {
   [ChainId.BASE]: {
     USDC: USDC_BASE,
     WETH: WRAPPED_NATIVE_CURRENCY[ChainId.BASE],
-  }
+  },
+  [ChainId.CANXIUM]: {
+    WCAU: WCAU_CANXIUM,
+    USDC: USDC_CANXIUM,
+  },
+  [ChainId.CANXIUM_CERIUM]: {
+    WCAU: WCAU_CANXIUM_CERIUM,
+    DAI: USDC_CANXIUM_CERIUM,
+  },
   // Currently we do not have providers for Moonbeam mainnet or Gnosis testnet
 };
 

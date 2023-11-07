@@ -8,6 +8,8 @@ export const BNB_NONFUNGIBLE_POSITION_MANAGER_ADDRESS = CHAIN_TO_ADDRESSES_MAP[C
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 export const BNB_SWAP_ROUTER_02_ADDRESS = CHAIN_TO_ADDRESSES_MAP[ChainId.BNB].swapRouter02Address!;
 export const BNB_V3_MIGRATOR_ADDRESS = CHAIN_TO_ADDRESSES_MAP[ChainId.BNB].v3MigratorAddress;
+export const CANXIUM_SWAP_ROUTER_02_ADDRESS = CHAIN_TO_ADDRESSES_MAP[ChainId.CANXIUM].swapRouter02Address!;
+export const CANXIUM_CERIUM_SWAP_ROUTER_02_ADDRESS = CHAIN_TO_ADDRESSES_MAP[ChainId.CANXIUM_CERIUM].swapRouter02Address!;
 
 export const V3_CORE_FACTORY_ADDRESSES: AddressMap = {
   ...constructSameAddressMap(FACTORY_ADDRESS),
@@ -20,6 +22,8 @@ export const V3_CORE_FACTORY_ADDRESSES: AddressMap = {
   [ChainId.AVALANCHE]: CHAIN_TO_ADDRESSES_MAP[ChainId.AVALANCHE].v3CoreFactoryAddress,
   [ChainId.BASE_GOERLI]: CHAIN_TO_ADDRESSES_MAP[ChainId.BASE_GOERLI].v3CoreFactoryAddress,
   [ChainId.BASE]: CHAIN_TO_ADDRESSES_MAP[ChainId.BASE].v3CoreFactoryAddress,
+  [ChainId.CANXIUM]: CHAIN_TO_ADDRESSES_MAP[ChainId.CANXIUM].v3CoreFactoryAddress,
+  [ChainId.CANXIUM_CERIUM]: CHAIN_TO_ADDRESSES_MAP[ChainId.CANXIUM_CERIUM].v3CoreFactoryAddress,
   // TODO: Gnosis + Moonbeam contracts to be deployed
 };
 
@@ -34,6 +38,8 @@ export const QUOTER_V2_ADDRESSES: AddressMap = {
   [ChainId.AVALANCHE]: CHAIN_TO_ADDRESSES_MAP[ChainId.AVALANCHE].quoterAddress,
   [ChainId.BASE_GOERLI]: CHAIN_TO_ADDRESSES_MAP[ChainId.BASE_GOERLI].quoterAddress,
   [ChainId.BASE]: CHAIN_TO_ADDRESSES_MAP[ChainId.BASE].quoterAddress,
+  [ChainId.CANXIUM]: CHAIN_TO_ADDRESSES_MAP[ChainId.CANXIUM].quoterAddress,
+  [ChainId.CANXIUM_CERIUM]: CHAIN_TO_ADDRESSES_MAP[ChainId.CANXIUM_CERIUM].quoterAddress,
   // TODO: Gnosis + Moonbeam contracts to be deployed
 };
 
@@ -53,12 +59,20 @@ export const UNISWAP_MULTICALL_ADDRESSES: AddressMap = {
   [ChainId.AVALANCHE]: CHAIN_TO_ADDRESSES_MAP[ChainId.AVALANCHE].multicallAddress,
   [ChainId.BASE_GOERLI]: CHAIN_TO_ADDRESSES_MAP[ChainId.BASE_GOERLI].multicallAddress,
   [ChainId.BASE]: CHAIN_TO_ADDRESSES_MAP[ChainId.BASE].multicallAddress,
+  [ChainId.CANXIUM]: CHAIN_TO_ADDRESSES_MAP[ChainId.CANXIUM].multicallAddress,
+  [ChainId.CANXIUM_CERIUM]: CHAIN_TO_ADDRESSES_MAP[ChainId.CANXIUM_CERIUM].multicallAddress,
   // TODO: Gnosis + Moonbeam contracts to be deployed
 };
 
 export const SWAP_ROUTER_02_ADDRESSES = (chainId: number) : string => {
   if (chainId == ChainId.BNB) {
     return BNB_SWAP_ROUTER_02_ADDRESS;
+  }
+  if (chainId == ChainId.CANXIUM) {
+    return CANXIUM_SWAP_ROUTER_02_ADDRESS;
+  }
+  if (chainId == ChainId.CANXIUM_CERIUM) {
+    return CANXIUM_CERIUM_SWAP_ROUTER_02_ADDRESS;
   }
   return '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45';
 };
@@ -98,6 +112,8 @@ export const WETH9: {
     | ChainId.MOONBEAM
     | ChainId.BNB
     | ChainId.AVALANCHE
+    | ChainId.CANXIUM
+    | ChainId.CANXIUM_CERIUM
   >]: Token;
 } = {
   [ChainId.MAINNET]: new Token(
