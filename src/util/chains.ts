@@ -16,6 +16,8 @@ export const SUPPORTED_CHAINS: ChainId[] = [
   ChainId.BNB,
   ChainId.AVALANCHE,
   ChainId.BASE,
+  ChainId.CANXIUM,
+  ChainId.CANXIUM_CERIUM
   // Gnosis and Moonbeam don't yet have contracts deployed yet
 ];
 
@@ -79,6 +81,10 @@ export const ID_TO_CHAIN_ID = (id: number): ChainId => {
       return ChainId.BASE;
     case 84531:
       return ChainId.BASE_GOERLI;
+    case 3003:
+      return ChainId.CANXIUM;
+    case 30103:
+      return ChainId.CANXIUM_CERIUM;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -102,6 +108,8 @@ export enum ChainName {
   AVALANCHE = 'avalanche-mainnet',
   BASE = 'base-mainnet',
   BASE_GOERLI = 'base-goerli',
+  CANXIUM = 'canxium',
+  CANXIUM_CERIUM = 'cerium'
 }
 
 
@@ -114,6 +122,7 @@ export enum NativeCurrencyName {
   MOONBEAM = 'GLMR',
   BNB = 'BNB',
   AVALANCHE = 'AVAX',
+  CAU = 'CAU'
 }
 
 export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
@@ -177,7 +186,13 @@ export const NATIVE_NAMES_BY_ID: { [chainId: number]: string[] } = {
     'ETH',
     'ETHER',
     '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee',
-  ]
+  ],
+  [ChainId.CANXIUM]: [
+    'CAU', '0x0000000000000000000000000000000000001010'
+  ],
+  [ChainId.CANXIUM_CERIUM]: [
+    'CAU', '0x0000000000000000000000000000000000001010',
+  ],
 };
 
 export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
@@ -197,6 +212,8 @@ export const NATIVE_CURRENCY: { [chainId: number]: NativeCurrencyName } = {
   [ChainId.BNB]: NativeCurrencyName.BNB,
   [ChainId.AVALANCHE]: NativeCurrencyName.AVALANCHE,
   [ChainId.BASE]: NativeCurrencyName.ETHER,
+  [ChainId.CANXIUM]: NativeCurrencyName.CAU,
+  [ChainId.CANXIUM_CERIUM]: NativeCurrencyName.CAU,
 };
 
 export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
@@ -235,6 +252,10 @@ export const ID_TO_NETWORK_NAME = (id: number): ChainName => {
       return ChainName.BASE;
     case 84531:
       return ChainName.BASE_GOERLI;
+    case 3003:
+      return ChainName.CANXIUM;
+    case 30103:
+      return ChainName.CANXIUM_CERIUM;
     default:
       throw new Error(`Unknown chain id: ${id}`);
   }
@@ -274,6 +295,10 @@ export const ID_TO_PROVIDER = (id: ChainId): string => {
       return process.env.JSON_RPC_PROVIDER_AVALANCHE!;
     case ChainId.BASE:
       return process.env.JSON_RPC_PROVIDER_BASE!;
+    case ChainId.CANXIUM:
+      return process.env.JSON_RPC_PROVIDER_CANXIUM!;
+    case ChainId.CANXIUM_CERIUM:
+      return process.env.JSON_RPC_PROVIDER_CANXIUM_CERIUM!;
     default:
       throw new Error(`Chain id: ${id} not supported`);
   }
@@ -400,7 +425,21 @@ export const WRAPPED_NATIVE_CURRENCY: { [chainId in ChainId]: Token } = {
     18,
     'WETH',
     'Wrapped Ether'
-  )
+  ),
+  [ChainId.CANXIUM]: new Token(
+    ChainId.CANXIUM,
+    '0xA3A18968b3a5f5bd0872C58B1bC59481E4496d67',
+    18,
+    'WCAU',
+    'Wrapped CAU'
+  ),
+  [ChainId.CANXIUM_CERIUM]: new Token(
+    ChainId.CANXIUM_CERIUM,
+    '0x620969CB5486D4E9E3884E5106EfB4f7d31a76A8',
+    18,
+    'WCAU',
+    'Wrapped CAU'
+  ),
 };
 
 function isMatic(
@@ -551,6 +590,29 @@ class AvalancheNativeCurrency extends NativeCurrency {
   }
 }
 
+function isCanxium(chainId: number): chainId is ChainId.CANXIUM | ChainId.CANXIUM_CERIUM {
+  return chainId === ChainId.CANXIUM || chainId === ChainId.CANXIUM_CERIUM;
+}
+class CanxiumNativeCurrency extends NativeCurrency {
+  equals(other: Currency): boolean {
+    return other.isNative && other.chainId === this.chainId;
+  }
+
+  get wrapped(): Token {
+    if (!isCanxium(this.chainId)) throw new Error('Not canxium');
+    const nativeCurrency = WRAPPED_NATIVE_CURRENCY[this.chainId];
+    if (nativeCurrency) {
+      return nativeCurrency;
+    }
+    throw new Error(`Does not support this chain ${this.chainId}`);
+  }
+
+  public constructor(chainId: number) {
+    if (!isCanxium(chainId)) throw new Error('Not canxium');
+    super(chainId, 18, 'CAU', 'Canxium');
+  }
+}
+
 export class ExtendedEther extends Ether {
   public get wrapped(): Token {
     if (this.chainId in WRAPPED_NATIVE_CURRENCY) {
@@ -588,6 +650,8 @@ export function nativeOnChain(chainId: number): NativeCurrency {
     cachedNativeCurrency[chainId] = new BnbNativeCurrency(chainId);
   } else if (isAvax(chainId)) {
     cachedNativeCurrency[chainId] = new AvalancheNativeCurrency(chainId);
+  } else if (isCanxium(chainId)) {
+    cachedNativeCurrency[chainId] = new CanxiumNativeCurrency(chainId);
   } else {
     cachedNativeCurrency[chainId] = ExtendedEther.onChain(chainId);
   }

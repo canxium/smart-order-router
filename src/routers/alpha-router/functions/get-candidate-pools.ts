@@ -34,6 +34,8 @@ import {
   USDC_OPTIMISM_GOERLI,
   USDC_POLYGON,
   USDC_SEPOLIA,
+  USDC_CANXIUM,
+  USDC_CANXIUM_CERIUM,
   USDT_ARBITRUM,
   USDT_BNB,
   USDT_MAINNET,
@@ -49,6 +51,8 @@ import {
   WMATIC_POLYGON,
   WMATIC_POLYGON_MUMBAI,
   WXDAI_GNOSIS,
+  WCAU_CANXIUM,
+  WCAU_CANXIUM_CERIUM,
 } from '../../../providers/token-provider';
 import { IV2PoolProvider, V2PoolAccessor, } from '../../../providers/v2/pool-provider';
 import { IV3PoolProvider, V3PoolAccessor, } from '../../../providers/v3/pool-provider';
@@ -171,6 +175,14 @@ const baseTokensByChain: { [chainId in ChainId]?: Token[] } = {
   ],
   [ChainId.BASE]: [
     USDC_BASE,
+  ],
+  [ChainId.CANXIUM]: [
+    USDC_CANXIUM,
+    WCAU_CANXIUM
+  ],
+  [ChainId.CANXIUM_CERIUM]: [
+    USDC_CANXIUM_CERIUM,
+    WCAU_CANXIUM_CERIUM
   ],
 };
 
