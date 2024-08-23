@@ -3,10 +3,14 @@ import { CondensedAddLiquidityOptions, MixedRouteSDK, Protocol, Trade } from '@u
 import { Currency, Fraction, Percent, Token, TradeType } from '@uniswap/sdk-core';
 import { SwapOptions as UniversalRouterSwapOptions } from '@uniswap/universal-router-sdk';
 import { Route as V2RouteRaw } from '@uniswap/v2-sdk';
-import { Pool, Position, MethodParameters as SDKMethodParameters, Route as V3RouteRaw } from '@uniswap/v3-sdk';
+import { MethodParameters as SDKMethodParameters, Pool, Position, Route as V3RouteRaw } from '@uniswap/v3-sdk';
+import { Route as V4RouteRaw } from '@uniswap/v4-sdk';
 import { SimulationStatus } from '../providers';
 import { CurrencyAmount } from '../util/amounts';
 import { RouteWithValidQuote } from './alpha-router';
+export declare class V4Route extends V4RouteRaw<Currency, Currency> {
+    protocol: Protocol.V4;
+}
 export declare class V3Route extends V3RouteRaw<Token, Token> {
     protocol: Protocol.V3;
 }
@@ -16,6 +20,7 @@ export declare class V2Route extends V2RouteRaw<Token, Token> {
 export declare class MixedRoute extends MixedRouteSDK<Token, Token> {
     protocol: Protocol.MIXED;
 }
+export declare type SupportedRoutes = V4Route | V3Route | V2Route | MixedRoute;
 export declare type SwapRoute = {
     /**
      * The quote for the swap.
@@ -31,6 +36,14 @@ export declare type SwapRoute = {
      */
     quoteGasAdjusted: CurrencyAmount;
     /**
+     * The quote adjusted for the estimated gas used by the swap as well as the portion amount, if applicable.
+     * This is computed by estimating the amount of gas used by the swap, converting
+     * this estimate to be in terms of the quote token, and subtracting that from the quote.
+     * Then it uses the IPortionProvider.getPortionAdjustedQuote method to adjust the quote for the portion amount.
+     * i.e. quoteGasAdjusted = quote - estimatedGasUsedQuoteToken - portionAmount
+     */
+    quoteGasAndPortionAdjusted?: CurrencyAmount;
+    /**
      * The estimate of the gas used by the swap.
      */
     estimatedGasUsed: BigNumber;
@@ -43,8 +56,10 @@ export declare type SwapRoute = {
      */
     estimatedGasUsedUSD: CurrencyAmount;
     /**
-     * The gas price used when computing quoteGasAdjusted, estimatedGasUsedQuoteToken, etc.
+     * The estimate of the gas used by the swap in terms of the gas token if specified.
+     * will be undefined if no gas token is specified in the AlphaRouter config
      */
+    estimatedGasUsedGasToken?: CurrencyAmount;
     gasPriceWei: BigNumber;
     /**
      * The Trade object representing the swap.
@@ -74,6 +89,10 @@ export declare type SwapRoute = {
      * hit the cached routes. This is used further down the line for future perf optimizations.
      */
     hitsCachedRoute?: boolean;
+    /**
+     * Portion amount either echoed from upstream routing-api for exact out or calculated from portionBips for exact in
+     */
+    portionAmount?: CurrencyAmount;
 };
 export declare type MethodParameters = SDKMethodParameters & {
     to: string;

@@ -1,6 +1,6 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Protocol } from '@uniswap/router-sdk';
-import { Token, TradeType } from '@uniswap/sdk-core';
+import { Currency, Token, TradeType } from '@uniswap/sdk-core';
 import { IV2PoolProvider } from '../../../providers/v2/pool-provider';
 import { IV3PoolProvider } from '../../../providers/v3/pool-provider';
 import { CurrencyAmount } from '../../../util/amounts';
@@ -23,9 +23,10 @@ export interface IRouteWithValidQuote<Route extends V3Route | V2Route | MixedRou
     gasEstimate: BigNumber;
     gasCostInToken: CurrencyAmount;
     gasCostInUSD: CurrencyAmount;
+    gasCostInGasToken?: CurrencyAmount;
     tradeType: TradeType;
     poolAddresses: string[];
-    tokenPath: Token[];
+    tokenPath: Currency[];
 }
 export declare type IV2RouteWithValidQuote = {
     protocol: Protocol.V2;
@@ -68,6 +69,7 @@ export declare class V2RouteWithValidQuote implements IV2RouteWithValidQuote {
     gasEstimate: BigNumber;
     gasCostInToken: CurrencyAmount;
     gasCostInUSD: CurrencyAmount;
+    gasCostInGasToken?: CurrencyAmount;
     tradeType: TradeType;
     poolAddresses: string[];
     tokenPath: Token[];
@@ -111,6 +113,7 @@ export declare class V3RouteWithValidQuote implements IV3RouteWithValidQuote {
     gasEstimate: BigNumber;
     gasCostInToken: CurrencyAmount;
     gasCostInUSD: CurrencyAmount;
+    gasCostInGasToken?: CurrencyAmount;
     tradeType: TradeType;
     poolAddresses: string[];
     tokenPath: Token[];
@@ -155,9 +158,10 @@ export declare class MixedRouteWithValidQuote implements IMixedRouteWithValidQuo
     gasEstimate: BigNumber;
     gasCostInToken: CurrencyAmount;
     gasCostInUSD: CurrencyAmount;
+    gasCostInGasToken?: CurrencyAmount;
     tradeType: TradeType;
     poolAddresses: string[];
-    tokenPath: Token[];
+    tokenPath: Currency[];
     toString(): string;
     constructor({ amount, rawQuote, sqrtPriceX96AfterList, initializedTicksCrossedList, quoterGasEstimate, percent, route, mixedRouteGasModel, quoteToken, tradeType, v3PoolProvider, v2PoolProvider, }: MixedRouteWithValidQuoteParams);
 }

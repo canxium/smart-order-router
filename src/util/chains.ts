@@ -697,8 +697,8 @@ class AvalancheNativeCurrency extends NativeCurrency {
   }
 }
 
-function isCanxium(chainId: number): chainId is ChainId.CANXIUM | ChainId.CANXIUM_CERIUM {
-  return chainId === ChainId.CANXIUM || chainId === ChainId.CANXIUM_CERIUM;
+function isCanxium(chainId: number): chainId is ChainId.CANXIUM {
+  return chainId === ChainId.CANXIUM;
 }
 class CanxiumNativeCurrency extends NativeCurrency {
   equals(other: Currency): boolean {

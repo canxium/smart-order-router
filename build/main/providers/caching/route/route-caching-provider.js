@@ -21,9 +21,10 @@ class IRouteCachingProvider {
          * @param protocols
          * @param blockNumber
          */
-        this.getCachedRoute = async (// Defined as a readonly member instead of a regular function to make it final.
+        this.getCachedRoute = async (
+        // Defined as a readonly member instead of a regular function to make it final.
         chainId, amount, quoteToken, tradeType, protocols, blockNumber, optimistic = false) => {
-            if (await this.getCacheMode(chainId, amount, quoteToken, tradeType, protocols) == model_1.CacheMode.Darkmode) {
+            if ((await this.getCacheMode(chainId, amount, quoteToken, tradeType, protocols)) == model_1.CacheMode.Darkmode) {
                 return undefined;
             }
             const cachedRoute = await this._getCachedRoute(chainId, amount, quoteToken, tradeType, protocols, blockNumber, optimistic);
@@ -38,9 +39,11 @@ class IRouteCachingProvider {
          * @param cachedRoutes The route to cache.
          * @returns Promise<boolean> Indicates if the route was inserted into cache.
          */
-        this.setCachedRoute = async (// Defined as a readonly member instead of a regular function to make it final.
+        this.setCachedRoute = async (
+        // Defined as a readonly member instead of a regular function to make it final.
         cachedRoutes, amount) => {
-            if (await this.getCacheModeFromCachedRoutes(cachedRoutes, amount) == model_1.CacheMode.Darkmode) {
+            if ((await this.getCacheModeFromCachedRoutes(cachedRoutes, amount)) ==
+                model_1.CacheMode.Darkmode) {
                 return false;
             }
             cachedRoutes.blocksToLive = await this._getBlocksToLive(cachedRoutes, amount);
@@ -54,12 +57,16 @@ class IRouteCachingProvider {
      * @param amount
      */
     getCacheModeFromCachedRoutes(cachedRoutes, amount) {
-        const quoteToken = cachedRoutes.tradeType == sdk_core_1.TradeType.EXACT_INPUT ? cachedRoutes.tokenOut : cachedRoutes.tokenIn;
+        const quoteToken = cachedRoutes.tradeType == sdk_core_1.TradeType.EXACT_INPUT
+            ? cachedRoutes.tokenOut
+            : cachedRoutes.tokenIn;
         return this.getCacheMode(cachedRoutes.chainId, amount, quoteToken, cachedRoutes.tradeType, cachedRoutes.protocolsCovered);
     }
     filterExpiredCachedRoutes(cachedRoutes, blockNumber, optimistic) {
-        return (cachedRoutes === null || cachedRoutes === void 0 ? void 0 : cachedRoutes.notExpired(blockNumber, optimistic)) ? cachedRoutes : undefined;
+        return (cachedRoutes === null || cachedRoutes === void 0 ? void 0 : cachedRoutes.notExpired(blockNumber, optimistic))
+            ? cachedRoutes
+            : undefined;
     }
 }
 exports.IRouteCachingProvider = IRouteCachingProvider;
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicm91dGUtY2FjaGluZy1wcm92aWRlci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NyYy9wcm92aWRlcnMvY2FjaGluZy9yb3V0ZS9yb3V0ZS1jYWNoaW5nLXByb3ZpZGVyLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7OztBQU9BLGdEQUF3RjtBQUV4RixtQ0FBb0M7QUFHcEM7OztHQUdHO0FBQ0gsTUFBc0IscUJBQXFCO0lBQTNDO1FBQ0U7Ozs7Ozs7Ozs7O1dBV0c7UUFDYSxtQkFBYyxHQUFHLEtBQUssRUFBRywrRUFBK0U7UUFDdEgsT0FBZSxFQUNmLE1BQWdDLEVBQ2hDLFVBQWlCLEVBQ2pCLFNBQW9CLEVBQ3BCLFNBQXFCLEVBQ3JCLFdBQW1CLEVBQ25CLFVBQVUsR0FBRyxLQUFLLEVBQ2lCLEVBQUU7WUFDckMsSUFBSSxNQUFNLElBQUksQ0FBQyxZQUFZLENBQUMsT0FBTyxFQUFFLE1BQU0sRUFBRSxVQUFVLEVBQUUsU0FBUyxFQUFFLFNBQVMsQ0FBQyxJQUFJLGlCQUFTLENBQUMsUUFBUSxFQUFFO2dCQUNwRyxPQUFPLFNBQVMsQ0FBQzthQUNsQjtZQUVELE1BQU0sV0FBVyxHQUFHLE1BQU0sSUFBSSxDQUFDLGVBQWUsQ0FDNUMsT0FBTyxFQUNQLE1BQU0sRUFDTixVQUFVLEVBQ1YsU0FBUyxFQUNULFNBQVMsRUFDVCxXQUFXLEVBQ1gsVUFBVSxDQUNYLENBQUM7WUFFRixPQUFPLElBQUksQ0FBQyx5QkFBeUIsQ0FBQyxXQUFXLEVBQUUsV0FBVyxFQUFFLFVBQVUsQ0FBQyxDQUFDO1FBQzlFLENBQUMsQ0FBQztRQUVGOzs7Ozs7OztXQVFHO1FBQ2EsbUJBQWMsR0FBRyxLQUFLLEVBQUcsK0VBQStFO1FBQ3RILFlBQTBCLEVBQzFCLE1BQWdDLEVBQ2QsRUFBRTtZQUNwQixJQUFJLE1BQU0sSUFBSSxDQUFDLDRCQUE0QixDQUFDLFlBQVksRUFBRSxNQUFNLENBQUMsSUFBSSxpQkFBUyxDQUFDLFFBQVEsRUFBRTtnQkFDdkYsT0FBTyxLQUFLLENBQUM7YUFDZDtZQUVELFlBQVksQ0FBQyxZQUFZLEdBQUcsTUFBTSxJQUFJLENBQUMsZ0JBQWdCLENBQUMsWUFBWSxFQUFFLE1BQU0sQ0FBQyxDQUFDO1lBRTlFLE9BQU8sSUFBSSxDQUFDLGVBQWUsQ0FBQyxZQUFZLEVBQUUsTUFBTSxDQUFDLENBQUM7UUFDcEQsQ0FBQyxDQUFDO0lBMkZKLENBQUM7SUF6RkM7Ozs7O09BS0c7SUFDSSw0QkFBNEIsQ0FDakMsWUFBMEIsRUFDMUIsTUFBZ0M7UUFFaEMsTUFBTSxVQUFVLEdBQUcsWUFBWSxDQUFDLFNBQVMsSUFBSSxvQkFBUyxDQUFDLFdBQVcsQ0FBQyxDQUFDLENBQUMsWUFBWSxDQUFDLFFBQVEsQ0FBQyxDQUFDLENBQUMsWUFBWSxDQUFDLE9BQU8sQ0FBQztRQUVsSCxPQUFPLElBQUksQ0FBQyxZQUFZLENBQ3RCLFlBQVksQ0FBQyxPQUFPLEVBQ3BCLE1BQU0sRUFDTixVQUFVLEVBQ1YsWUFBWSxDQUFDLFNBQVMsRUFDdEIsWUFBWSxDQUFDLGdCQUFnQixDQUM5QixDQUFDO0lBQ0osQ0FBQztJQXFCUyx5QkFBeUIsQ0FDakMsWUFBc0MsRUFDdEMsV0FBbUIsRUFDbkIsVUFBbUI7UUFFbkIsT0FBTyxDQUFBLFlBQVksYUFBWixZQUFZLHVCQUFaLFlBQVksQ0FBRSxVQUFVLENBQUMsV0FBVyxFQUFFLFVBQVUsQ0FBQyxFQUFDLENBQUMsQ0FBQyxZQUFZLENBQUMsQ0FBQyxDQUFDLFNBQVMsQ0FBQztJQUN0RixDQUFDO0NBMkNGO0FBdEpELHNEQXNKQyJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoicm91dGUtY2FjaGluZy1wcm92aWRlci5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uLy4uLy4uLy4uL3NyYy9wcm92aWRlcnMvY2FjaGluZy9yb3V0ZS9yb3V0ZS1jYWNoaW5nLXByb3ZpZGVyLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7OztBQU9BLGdEQU0yQjtBQUUzQixtQ0FBb0M7QUFHcEM7OztHQUdHO0FBQ0gsTUFBc0IscUJBQXFCO0lBQTNDO1FBQ0U7Ozs7Ozs7Ozs7O1dBV0c7UUFDYSxtQkFBYyxHQUFHLEtBQUs7UUFDcEMsK0VBQStFO1FBQy9FLE9BQWUsRUFDZixNQUFnQyxFQUNoQyxVQUFpQixFQUNqQixTQUFvQixFQUNwQixTQUFxQixFQUNyQixXQUFtQixFQUNuQixVQUFVLEdBQUcsS0FBSyxFQUNpQixFQUFFO1lBQ3JDLElBQ0UsQ0FBQyxNQUFNLElBQUksQ0FBQyxZQUFZLENBQ3RCLE9BQU8sRUFDUCxNQUFNLEVBQ04sVUFBVSxFQUNWLFNBQVMsRUFDVCxTQUFTLENBQ1YsQ0FBQyxJQUFJLGlCQUFTLENBQUMsUUFBUSxFQUN4QjtnQkFDQSxPQUFPLFNBQVMsQ0FBQzthQUNsQjtZQUVELE1BQU0sV0FBVyxHQUFHLE1BQU0sSUFBSSxDQUFDLGVBQWUsQ0FDNUMsT0FBTyxFQUNQLE1BQU0sRUFDTixVQUFVLEVBQ1YsU0FBUyxFQUNULFNBQVMsRUFDVCxXQUFXLEVBQ1gsVUFBVSxDQUNYLENBQUM7WUFFRixPQUFPLElBQUksQ0FBQyx5QkFBeUIsQ0FBQyxXQUFXLEVBQUUsV0FBVyxFQUFFLFVBQVUsQ0FBQyxDQUFDO1FBQzlFLENBQUMsQ0FBQztRQUVGOzs7Ozs7OztXQVFHO1FBQ2EsbUJBQWMsR0FBRyxLQUFLO1FBQ3BDLCtFQUErRTtRQUMvRSxZQUEwQixFQUMxQixNQUFnQyxFQUNkLEVBQUU7WUFDcEIsSUFDRSxDQUFDLE1BQU0sSUFBSSxDQUFDLDRCQUE0QixDQUFDLFlBQVksRUFBRSxNQUFNLENBQUMsQ0FBQztnQkFDL0QsaUJBQVMsQ0FBQyxRQUFRLEVBQ2xCO2dCQUNBLE9BQU8sS0FBSyxDQUFDO2FBQ2Q7WUFFRCxZQUFZLENBQUMsWUFBWSxHQUFHLE1BQU0sSUFBSSxDQUFDLGdCQUFnQixDQUNyRCxZQUFZLEVBQ1osTUFBTSxDQUNQLENBQUM7WUFFRixPQUFPLElBQUksQ0FBQyxlQUFlLENBQUMsWUFBWSxFQUFFLE1BQU0sQ0FBQyxDQUFDO1FBQ3BELENBQUMsQ0FBQztJQXNHSixDQUFDO0lBcEdDOzs7OztPQUtHO0lBQ0ksNEJBQTRCLENBQ2pDLFlBQTBCLEVBQzFCLE1BQWdDO1FBRWhDLE1BQU0sVUFBVSxHQUNkLFlBQVksQ0FBQyxTQUFTLElBQUksb0JBQVMsQ0FBQyxXQUFXO1lBQzdDLENBQUMsQ0FBQyxZQUFZLENBQUMsUUFBUTtZQUN2QixDQUFDLENBQUMsWUFBWSxDQUFDLE9BQU8sQ0FBQztRQUUzQixPQUFPLElBQUksQ0FBQyxZQUFZLENBQ3RCLFlBQVksQ0FBQyxPQUFPLEVBQ3BCLE1BQU0sRUFDTixVQUFVLEVBQ1YsWUFBWSxDQUFDLFNBQVMsRUFDdEIsWUFBWSxDQUFDLGdCQUFnQixDQUM5QixDQUFDO0lBQ0osQ0FBQztJQXFCUyx5QkFBeUIsQ0FDakMsWUFBc0MsRUFDdEMsV0FBbUIsRUFDbkIsVUFBbUI7UUFFbkIsT0FBTyxDQUFBLFlBQVksYUFBWixZQUFZLHVCQUFaLFlBQVksQ0FBRSxVQUFVLENBQUMsV0FBVyxFQUFFLFVBQVUsQ0FBQztZQUN0RCxDQUFDLENBQUMsWUFBWTtZQUNkLENBQUMsQ0FBQyxTQUFTLENBQUM7SUFDaEIsQ0FBQztDQWlERjtBQWpMRCxzREFpTEMifQ==

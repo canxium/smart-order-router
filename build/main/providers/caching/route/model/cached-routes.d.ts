@@ -1,9 +1,9 @@
 import { Protocol } from '@uniswap/router-sdk';
 import { ChainId, Token, TradeType } from '@uniswap/sdk-core';
-import { MixedRoute, RouteWithValidQuote, V2Route, V3Route } from '../../../../routers';
+import { RouteWithValidQuote, SupportedRoutes } from '../../../../routers';
 import { CachedRoute } from './cached-route';
 interface CachedRoutesParams {
-    routes: CachedRoute<V3Route | V2Route | MixedRoute>[];
+    routes: CachedRoute<SupportedRoutes>[];
     chainId: ChainId;
     tokenIn: Token;
     tokenOut: Token;
@@ -20,7 +20,7 @@ interface CachedRoutesParams {
  * @class CachedRoute
  */
 export declare class CachedRoutes {
-    readonly routes: CachedRoute<V3Route | V2Route | MixedRoute>[];
+    readonly routes: CachedRoute<SupportedRoutes>[];
     readonly chainId: ChainId;
     readonly tokenIn: Token;
     readonly tokenOut: Token;
@@ -40,7 +40,7 @@ export declare class CachedRoutes {
      * @param originalAmount
      * @param blocksToLive
      */
-    constructor({ routes, chainId, tokenIn, tokenOut, protocolsCovered, blockNumber, tradeType, originalAmount, blocksToLive }: CachedRoutesParams);
+    constructor({ routes, chainId, tokenIn, tokenOut, protocolsCovered, blockNumber, tradeType, originalAmount, blocksToLive, }: CachedRoutesParams);
     /**
      * Factory method that creates a `CachedRoutes` object from an array of RouteWithValidQuote.
      *

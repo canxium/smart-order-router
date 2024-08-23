@@ -1,9 +1,8 @@
 import { JsonRpcProvider } from '@ethersproject/providers';
 import { ChainId, TradeType } from '@uniswap/sdk-core';
-import { SwapOptions, SwapRoute } from '../routers';
+import { GasModelProviderConfig, SwapOptions, SwapRoute } from '../routers';
 import { CurrencyAmount } from '../util';
-import { ProviderConfig } from './provider';
-import { ArbitrumGasData, OptimismGasData } from './v3/gas-data-provider';
+import { IPortionProvider } from './portion-provider';
 export declare type SimulationResult = {
     transaction: {
         hash: string;
@@ -31,13 +30,14 @@ export declare enum SimulationStatus {
 export declare abstract class Simulator {
     protected chainId: ChainId;
     protected provider: JsonRpcProvider;
+    protected portionProvider: IPortionProvider;
     /**
      * Returns a new SwapRoute with simulated gas estimates
      * @returns SwapRoute
      */
-    constructor(provider: JsonRpcProvider, chainId: ChainId);
-    simulate(fromAddress: string, swapOptions: SwapOptions, swapRoute: SwapRoute, amount: CurrencyAmount, quote: CurrencyAmount, l2GasData?: OptimismGasData | ArbitrumGasData, providerConfig?: ProviderConfig): Promise<SwapRoute>;
-    protected abstract simulateTransaction(fromAddress: string, swapOptions: SwapOptions, swapRoute: SwapRoute, l2GasData?: OptimismGasData | ArbitrumGasData, providerConfig?: ProviderConfig): Promise<SwapRoute>;
+    constructor(provider: JsonRpcProvider, portionProvider: IPortionProvider, chainId: ChainId);
+    simulate(fromAddress: string, swapOptions: SwapOptions, swapRoute: SwapRoute, amount: CurrencyAmount, quote: CurrencyAmount, providerConfig?: GasModelProviderConfig): Promise<SwapRoute>;
+    protected abstract simulateTransaction(fromAddress: string, swapOptions: SwapOptions, swapRoute: SwapRoute, providerConfig?: GasModelProviderConfig): Promise<SwapRoute>;
     protected userHasSufficientBalance(fromAddress: string, tradeType: TradeType, amount: CurrencyAmount, quote: CurrencyAmount): Promise<boolean>;
     protected checkTokenApproved(fromAddress: string, inputAmount: CurrencyAmount, swapOptions: SwapOptions, provider: JsonRpcProvider): Promise<boolean>;
 }

@@ -30,6 +30,10 @@ export declare type AmountQuote = {
      * depending on if the slot has already been loaded in the call.
      */
     gasEstimate: BigNumber | null;
+    /**
+     * Final attempted gas limit set by the on-chain quote provider
+     */
+    gasLimit: BigNumber | null;
 };
 export declare class BlockConflictError extends Error {
     name: string;
@@ -65,6 +69,13 @@ export declare type RouteWithQuotes<TRoute extends V3Route | V2Route | MixedRout
     AmountQuote[]
 ];
 /**
+ * Final consolidated return type of all on-chain quotes.
+ */
+export declare type OnChainQuotes<TRoute extends V3Route | V2Route | MixedRoute> = {
+    routesWithQuotes: RouteWithQuotes<TRoute>[];
+    blockNumber: BigNumber;
+};
+/**
  * Provider for getting on chain quotes using routes containing V3 pools or V2 pools.
  *
  * @export
@@ -81,10 +92,7 @@ export interface IOnChainQuoteProvider {
      * @returns For each route returns a RouteWithQuotes object that contains all the quotes.
      * @returns The blockNumber used when generating the quotes.
      */
-    getQuotesManyExactIn<TRoute extends V3Route | V2Route | MixedRoute>(amountIns: CurrencyAmount[], routes: TRoute[], providerConfig?: ProviderConfig): Promise<{
-        routesWithQuotes: RouteWithQuotes<TRoute>[];
-        blockNumber: BigNumber;
-    }>;
+    getQuotesManyExactIn<TRoute extends V3Route | V2Route | MixedRoute>(amountIns: CurrencyAmount[], routes: TRoute[], providerConfig?: ProviderConfig): Promise<OnChainQuotes<TRoute>>;
     /**
      * For every route, gets ane exactOut quote for every amount provided.
      * @notice This does not support quotes for MixedRoutes (routes with both V3 and V2 pools/pairs) or pure V2 routes
@@ -95,10 +103,7 @@ export interface IOnChainQuoteProvider {
      * @returns For each route returns a RouteWithQuotes object that contains all the quotes.
      * @returns The blockNumber used when generating the quotes.
      */
-    getQuotesManyExactOut<TRoute extends V3Route>(amountOuts: CurrencyAmount[], routes: TRoute[], providerConfig?: ProviderConfig): Promise<{
-        routesWithQuotes: RouteWithQuotes<TRoute>[];
-        blockNumber: BigNumber;
-    }>;
+    getQuotesManyExactOut<TRoute extends V3Route>(amountOuts: CurrencyAmount[], routes: TRoute[], providerConfig?: ProviderConfig): Promise<OnChainQuotes<TRoute>>;
 }
 /**
  * The parameters for the multicalls we make.
@@ -177,11 +182,12 @@ export declare class OnChainQuoteProvider implements IOnChainQuoteProvider {
     protected provider: BaseProvider;
     protected multicall2Provider: UniswapMulticallProvider;
     protected retryOptions: QuoteRetryOptions;
-    protected batchParams: BatchParams;
+    protected batchParams: (optimisticCachedRoutes: boolean, useMixedRouteQuoter: boolean) => BatchParams;
     protected gasErrorFailureOverride: FailureOverrides;
     protected successRateFailureOverrides: FailureOverrides;
     protected blockNumberConfig: BlockNumberConfig;
-    protected quoterAddressOverride?: string | undefined;
+    protected quoterAddressOverride?: ((useMixedRouteQuoter: boolean) => string | undefined) | undefined;
+    protected metricsPrefix: (chainId: ChainId, useMixedRouteQuoter: boolean, optimisticCachedRoutes: boolean) => string;
     /**
      * Creates an instance of OnChainQuoteProvider.
      *
@@ -195,22 +201,17 @@ export declare class OnChainQuoteProvider implements IOnChainQuoteProvider {
      * @param successRateFailureOverrides The parameters for retries when we fail to get quotes.
      * @param blockNumberConfig Parameters for adjusting which block we get quotes from, and how to handle block header not found errors.
      * @param [quoterAddressOverride] Overrides the address of the quoter contract to use.
+     * @param metricsPrefix metrics prefix to differentiate between different instances of the quote provider.
      */
-    constructor(chainId: ChainId, provider: BaseProvider, multicall2Provider: UniswapMulticallProvider, retryOptions?: QuoteRetryOptions, batchParams?: BatchParams, gasErrorFailureOverride?: FailureOverrides, successRateFailureOverrides?: FailureOverrides, blockNumberConfig?: BlockNumberConfig, quoterAddressOverride?: string | undefined);
+    constructor(chainId: ChainId, provider: BaseProvider, multicall2Provider: UniswapMulticallProvider, retryOptions?: QuoteRetryOptions, batchParams?: (optimisticCachedRoutes: boolean, useMixedRouteQuoter: boolean) => BatchParams, gasErrorFailureOverride?: FailureOverrides, successRateFailureOverrides?: FailureOverrides, blockNumberConfig?: BlockNumberConfig, quoterAddressOverride?: ((useMixedRouteQuoter: boolean) => string | undefined) | undefined, metricsPrefix?: (chainId: ChainId, useMixedRouteQuoter: boolean, optimisticCachedRoutes: boolean) => string);
     private getQuoterAddress;
-    getQuotesManyExactIn<TRoute extends V3Route | V2Route | MixedRoute>(amountIns: CurrencyAmount[], routes: TRoute[], providerConfig?: ProviderConfig): Promise<{
-        routesWithQuotes: RouteWithQuotes<TRoute>[];
-        blockNumber: BigNumber;
-    }>;
-    getQuotesManyExactOut<TRoute extends V3Route>(amountOuts: CurrencyAmount[], routes: TRoute[], providerConfig?: ProviderConfig): Promise<{
-        routesWithQuotes: RouteWithQuotes<TRoute>[];
-        blockNumber: BigNumber;
-    }>;
+    getQuotesManyExactIn<TRoute extends V3Route | V2Route | MixedRoute>(amountIns: CurrencyAmount[], routes: TRoute[], providerConfig?: ProviderConfig): Promise<OnChainQuotes<TRoute>>;
+    getQuotesManyExactOut<TRoute extends V3Route>(amountOuts: CurrencyAmount[], routes: TRoute[], providerConfig?: ProviderConfig): Promise<OnChainQuotes<TRoute>>;
     private getQuotesManyData;
     private partitionQuotes;
     private processQuoteResults;
     private validateBlockNumbers;
-    protected validateSuccessRate(allResults: Result<[BigNumber, BigNumber[], number[], BigNumber]>[], haveRetriedForSuccessRate: boolean): void | SuccessRateError;
+    protected validateSuccessRate(allResults: Result<[BigNumber, BigNumber[], number[], BigNumber]>[], haveRetriedForSuccessRate: boolean, useMixedRouteQuoter: boolean, optimisticCachedRoutes: boolean): void | SuccessRateError;
     /**
      * Throw an error for incorrect routes / function combinations
      * @param routes Any combination of V3, V2, and Mixed routes.

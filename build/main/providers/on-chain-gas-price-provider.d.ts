@@ -15,5 +15,5 @@ export declare class OnChainGasPriceProvider extends IGasPriceProvider {
     protected legacyGasPriceProvider: LegacyGasPriceProvider;
     protected eipChains: ChainId[];
     constructor(chainId: ChainId, eip1559GasPriceProvider: EIP1559GasPriceProvider, legacyGasPriceProvider: LegacyGasPriceProvider, eipChains?: ChainId[]);
-    getGasPrice(): Promise<GasPrice>;
+    getGasPrice(latestBlockNumber: number, requestBlockNumber?: number): Promise<GasPrice>;
 }

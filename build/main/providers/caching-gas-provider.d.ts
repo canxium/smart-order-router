@@ -7,7 +7,7 @@ import { GasPrice, IGasPriceProvider } from './gas-price-provider';
  * @export
  * @class CachingV3SubgraphProvider
  */
-export declare class CachingGasStationProvider implements IGasPriceProvider {
+export declare class CachingGasStationProvider extends IGasPriceProvider {
     protected chainId: ChainId;
     private gasPriceProvider;
     private cache;
@@ -19,5 +19,5 @@ export declare class CachingGasStationProvider implements IGasPriceProvider {
      * @param cache Cache instance to hold cached pools.
      */
     constructor(chainId: ChainId, gasPriceProvider: IGasPriceProvider, cache: ICache<GasPrice>);
-    getGasPrice(): Promise<GasPrice>;
+    getGasPrice(latestBlockNumber: number, requestBlockNumber?: number): Promise<GasPrice>;
 }

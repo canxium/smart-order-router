@@ -28,6 +28,7 @@ import {
   USDC_AVAX,
   USDC_BASE,
   USDC_BNB,
+  USDC_CANXIUM,
   USDC_MAINNET,
   USDC_MOONBEAM,
   USDC_NATIVE_ARBITRUM,
@@ -121,6 +122,10 @@ export const BASES_TO_CHECK_TRADES_AGAINST: ChainTokenList = {
     USDCE_ZKSYNC,
     USDC_ZKSYNC,
   ],
+  [ChainId.CANXIUM]: [
+    WRAPPED_NATIVE_CURRENCY[ChainId.CANXIUM]!,
+    USDC_CANXIUM,
+  ],
 };
 
 export interface IV3SubgraphProvider {
@@ -141,8 +146,7 @@ export interface ISubgraphProvider<TSubgraphPool extends SubgraphPool> {
 
 export abstract class CachingSubgraphProvider<
   TSubgraphPool extends SubgraphPool
-> implements ISubgraphProvider<TSubgraphPool>
-{
+> implements ISubgraphProvider<TSubgraphPool> {
   private SUBGRAPH_KEY = (chainId: ChainId) =>
     `subgraph-pools-${this.protocol}-${chainId}`;
 
@@ -158,7 +162,7 @@ export abstract class CachingSubgraphProvider<
     protected subgraphProvider: ISubgraphProvider<TSubgraphPool>,
     private cache: ICache<TSubgraphPool[]>,
     private protocol: Protocol
-  ) {}
+  ) { }
 
   public async getPools(): Promise<TSubgraphPool[]> {
     const cachedPools = await this.cache.get(this.SUBGRAPH_KEY(this.chainId));

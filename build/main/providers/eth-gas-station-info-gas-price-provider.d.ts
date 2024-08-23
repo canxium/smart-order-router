@@ -15,5 +15,5 @@ export declare type ETHGasStationResponse = {
 export declare class ETHGasStationInfoProvider extends IGasPriceProvider {
     private url;
     constructor(url: string);
-    getGasPrice(): Promise<GasPrice>;
+    getGasPrice(_latestBlockNumber: number, _requestBlockNumber?: number): Promise<GasPrice>;
 }

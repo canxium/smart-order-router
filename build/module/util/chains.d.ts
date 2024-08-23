@@ -10,8 +10,10 @@ export declare enum ChainName {
     SEPOLIA = "sepolia",
     OPTIMISM = "optimism-mainnet",
     OPTIMISM_GOERLI = "optimism-goerli",
+    OPTIMISM_SEPOLIA = "optimism-sepolia",
     ARBITRUM_ONE = "arbitrum-mainnet",
     ARBITRUM_GOERLI = "arbitrum-goerli",
+    ARBITRUM_SEPOLIA = "arbitrum-sepolia",
     POLYGON = "polygon-mainnet",
     POLYGON_MUMBAI = "polygon-mumbai",
     CELO = "celo-mainnet",
@@ -22,8 +24,10 @@ export declare enum ChainName {
     AVALANCHE = "avalanche-mainnet",
     BASE = "base-mainnet",
     BASE_GOERLI = "base-goerli",
-    CANXIUM = "canxium",
-    CANXIUM_CERIUM = "cerium"
+    BLAST = "blast-mainnet",
+    ZORA = "zora-mainnet",
+    ZKSYNC = "zksync-mainnet",
+    CANXIUM = "canxium"
 }
 export declare enum NativeCurrencyName {
     ETHER = "ETH",

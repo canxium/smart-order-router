@@ -20,10 +20,16 @@ export declare const ADDITIONAL_BASES: (tokenProvider: ITokenProvider) => Promis
     420?: {
         [tokenAddress: string]: Token[];
     } | undefined;
+    11155420?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
     42161?: {
         [tokenAddress: string]: Token[];
     } | undefined;
     421613?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    421614?: {
         [tokenAddress: string]: Token[];
     } | undefined;
     137?: {
@@ -56,10 +62,22 @@ export declare const ADDITIONAL_BASES: (tokenProvider: ITokenProvider) => Promis
     8453?: {
         [tokenAddress: string]: Token[];
     } | undefined;
-    3003?: {
+    7777777?: {
         [tokenAddress: string]: Token[];
     } | undefined;
-    30103?: {
+    999999999?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    30?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    81457?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    324?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    3003?: {
         [tokenAddress: string]: Token[];
     } | undefined;
 }>;
@@ -83,10 +101,16 @@ export declare const CUSTOM_BASES: (tokenProvider: ITokenProvider) => Promise<{
     420?: {
         [tokenAddress: string]: Token[];
     } | undefined;
+    11155420?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
     42161?: {
         [tokenAddress: string]: Token[];
     } | undefined;
     421613?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    421614?: {
         [tokenAddress: string]: Token[];
     } | undefined;
     137?: {
@@ -119,10 +143,22 @@ export declare const CUSTOM_BASES: (tokenProvider: ITokenProvider) => Promise<{
     8453?: {
         [tokenAddress: string]: Token[];
     } | undefined;
-    3003?: {
+    7777777?: {
         [tokenAddress: string]: Token[];
     } | undefined;
-    30103?: {
+    999999999?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    30?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    81457?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    324?: {
+        [tokenAddress: string]: Token[];
+    } | undefined;
+    3003?: {
         [tokenAddress: string]: Token[];
     } | undefined;
 }>;

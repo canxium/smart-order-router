@@ -32,6 +32,7 @@ export declare type SuccessResult<TReturn> = {
 export declare type FailResult = {
     success: false;
     returnData: string;
+    gasUsed?: BigNumber;
 };
 export declare type Result<TReturn> = SuccessResult<TReturn> | FailResult;
 /**

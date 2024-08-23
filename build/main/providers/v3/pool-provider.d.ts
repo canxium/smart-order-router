@@ -1,8 +1,15 @@
+import { BigNumber } from '@ethersproject/bignumber';
 import { ChainId, Token } from '@uniswap/sdk-core';
 import { FeeAmount, Pool } from '@uniswap/v3-sdk';
 import { Options as RetryOptions } from 'async-retry';
-import { IMulticallProvider } from '../multicall-provider';
+import { IMulticallProvider, Result } from '../multicall-provider';
+import { ILiquidity, ISlot0, PoolProvider } from '../pool-provider';
 import { ProviderConfig } from '../provider';
+declare type V3ISlot0 = ISlot0 & {
+    sqrtPriceX96: BigNumber;
+    tick: number;
+};
+declare type V3ILiquidity = ILiquidity;
 /**
  * Provider or getting V3 pools.
  *
@@ -38,23 +45,33 @@ export declare type V3PoolAccessor = {
     getAllPools: () => Pool[];
 };
 export declare type V3PoolRetryOptions = RetryOptions;
-export declare class V3PoolProvider implements IV3PoolProvider {
-    protected chainId: ChainId;
-    protected multicall2Provider: IMulticallProvider;
-    protected retryOptions: V3PoolRetryOptions;
+export declare type V3PoolConstruct = [Token, Token, FeeAmount];
+export declare class V3PoolProvider extends PoolProvider<Token, V3PoolConstruct, V3ISlot0, V3ILiquidity, V3PoolAccessor> implements IV3PoolProvider {
     private POOL_ADDRESS_CACHE;
     /**
-     * Creates an instance of V3PoolProvider.
+     * Creates an instance of V4PoolProvider.
      * @param chainId The chain id to use.
      * @param multicall2Provider The multicall provider to use to get the pools.
      * @param retryOptions The retry options for each call to the multicall.
      */
     constructor(chainId: ChainId, multicall2Provider: IMulticallProvider, retryOptions?: V3PoolRetryOptions);
-    getPools(tokenPairs: [Token, Token, FeeAmount][], providerConfig?: ProviderConfig): Promise<V3PoolAccessor>;
+    getPools(tokenPairs: V3PoolConstruct[], providerConfig?: ProviderConfig): Promise<V3PoolAccessor>;
     getPoolAddress(tokenA: Token, tokenB: Token, feeAmount: FeeAmount): {
         poolAddress: string;
         token0: Token;
         token1: Token;
     };
-    private getPoolsData;
+    protected getLiquidityFunctionName(): string;
+    protected getSlot0FunctionName(): string;
+    protected getPoolsData<TReturn>(poolAddresses: string[], functionName: string, providerConfig?: ProviderConfig): Promise<Result<TReturn>[]>;
+    protected getPoolIdentifier(pool: V3PoolConstruct): {
+        poolIdentifier: string;
+        currency0: Token;
+        currency1: Token;
+    };
+    protected instantiatePool(pool: V3PoolConstruct, slot0: V3ISlot0, liquidity: V3ILiquidity): Pool;
+    protected instantiatePoolAccessor(poolIdentifierToPool: {
+        [p: string]: Pool;
+    }): V3PoolAccessor;
 }
+export {};

@@ -27,7 +27,10 @@ export declare class V2SubgraphProvider implements IV2SubgraphProvider {
     private timeout;
     private rollback;
     private pageSize;
+    private trackedEthThreshold;
+    private untrackedUsdThreshold;
+    private subgraphUrlOverride?;
     private client;
-    constructor(chainId: ChainId, retries?: number, timeout?: number, rollback?: boolean, pageSize?: number);
+    constructor(chainId: ChainId, retries?: number, timeout?: number, rollback?: boolean, pageSize?: number, trackedEthThreshold?: number, untrackedUsdThreshold?: number, subgraphUrlOverride?: string | undefined);
     getPools(_tokenIn?: Token, _tokenOut?: Token, providerConfig?: ProviderConfig): Promise<V2SubgraphPool[]>;
 }

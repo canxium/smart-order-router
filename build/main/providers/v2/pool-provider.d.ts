@@ -3,6 +3,7 @@ import { Pair } from '@uniswap/v2-sdk';
 import { Options as RetryOptions } from 'async-retry';
 import { IMulticallProvider } from '../multicall-provider';
 import { ProviderConfig } from '../provider';
+import { ITokenPropertiesProvider } from '../token-properties-provider';
 /**
  * Provider for getting V2 pools.
  *
@@ -40,15 +41,17 @@ export declare type V2PoolRetryOptions = RetryOptions;
 export declare class V2PoolProvider implements IV2PoolProvider {
     protected chainId: ChainId;
     protected multicall2Provider: IMulticallProvider;
+    protected tokenPropertiesProvider: ITokenPropertiesProvider;
     protected retryOptions: V2PoolRetryOptions;
     private POOL_ADDRESS_CACHE;
     /**
      * Creates an instance of V2PoolProvider.
      * @param chainId The chain id to use.
      * @param multicall2Provider The multicall provider to use to get the pools.
+     * @param tokenPropertiesProvider The token properties provider to use to get token properties.
      * @param retryOptions The retry options for each call to the multicall.
      */
-    constructor(chainId: ChainId, multicall2Provider: IMulticallProvider, retryOptions?: V2PoolRetryOptions);
+    constructor(chainId: ChainId, multicall2Provider: IMulticallProvider, tokenPropertiesProvider: ITokenPropertiesProvider, retryOptions?: V2PoolRetryOptions);
     getPools(tokenPairs: [Token, Token][], providerConfig?: ProviderConfig): Promise<V2PoolAccessor>;
     getPoolAddress(tokenA: Token, tokenB: Token): {
         poolAddress: string;
@@ -56,4 +59,5 @@ export declare class V2PoolProvider implements IV2PoolProvider {
         token1: Token;
     };
     private getPoolsData;
+    private flatten;
 }

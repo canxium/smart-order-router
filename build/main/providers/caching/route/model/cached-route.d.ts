@@ -1,7 +1,7 @@
 import { Protocol } from '@uniswap/router-sdk';
 import { Token } from '@uniswap/sdk-core';
-import { MixedRoute, V2Route, V3Route } from '../../../../routers';
-interface CachedRouteParams<Route extends V3Route | V2Route | MixedRoute> {
+import { SupportedRoutes } from '../../../../routers';
+interface CachedRouteParams<Route extends SupportedRoutes> {
     route: Route;
     percent: number;
 }
@@ -11,7 +11,7 @@ interface CachedRouteParams<Route extends V3Route | V2Route | MixedRoute> {
  * @export
  * @class CachedRoute
  */
-export declare class CachedRoute<Route extends V3Route | V2Route | MixedRoute> {
+export declare class CachedRoute<Route extends SupportedRoutes> {
     readonly route: Route;
     readonly percent: number;
     private hashCode;

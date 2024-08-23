@@ -49,7 +49,6 @@ import {
   USDC_POLYGON,
   USDC_SEPOLIA,
   USDC_CANXIUM,
-  USDC_CANXIUM_CERIUM,
   USDT_ARBITRUM,
   USDT_BNB,
   USDT_MAINNET,
@@ -67,7 +66,6 @@ import {
   WSTETH_MAINNET,
   WXDAI_GNOSIS,
   WCAU_CANXIUM,
-  WCAU_CANXIUM_CERIUM,
 } from '../../../providers/token-provider';
 import {
   IV2PoolProvider,

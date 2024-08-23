@@ -123,10 +123,15 @@ export const UNISWAP_MULTICALL_ADDRESSES: AddressMap = {
 };
 
 export const SWAP_ROUTER_02_ADDRESSES = (chainId: number): string => {
-  if (chainId == ChainId.BNB) {
-    return BNB_SWAP_ROUTER_02_ADDRESS;
-  }
-  return '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45';
+  return (
+    SWAP_ROUTER_02_ADDRESSES_HELPER(chainId) ??
+    '0x68b3465833fb72A70ecDF485E0e4C7bD8665Fc45'
+  );
+};
+
+export const STATE_VIEW_ADDRESSES: AddressMap = {
+  ...constructSameAddressMap('0x1F98415757620B543A52E61c46B32eB19261F984'),
+  [ChainId.SEPOLIA]: '0xc7A3b85D43fF66AD98A895dE0EaE4b9e24C932D7',
 };
 
 export const OVM_GASPRICE_ADDRESS =

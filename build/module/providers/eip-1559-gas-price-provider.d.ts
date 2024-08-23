@@ -27,5 +27,5 @@ export declare class EIP1559GasPriceProvider extends IGasPriceProvider {
     private priorityFeePercentile;
     private blocksToConsider;
     constructor(provider: JsonRpcProvider, priorityFeePercentile?: number, blocksToConsider?: number);
-    getGasPrice(): Promise<GasPrice>;
+    getGasPrice(_latestBlockNumber: number, requestBlockNumber?: number): Promise<GasPrice>;
 }

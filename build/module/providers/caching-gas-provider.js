@@ -1,11 +1,12 @@
 import { log } from '../util/log';
+import { IGasPriceProvider } from './gas-price-provider';
 /**
  * Provider for getting gas price, with functionality for caching the results.
  *
  * @export
  * @class CachingV3SubgraphProvider
  */
-export class CachingGasStationProvider {
+export class CachingGasStationProvider extends IGasPriceProvider {
     /**
      * Creates an instance of CachingGasStationProvider.
      * @param chainId The chain id to use.
@@ -13,21 +14,24 @@ export class CachingGasStationProvider {
      * @param cache Cache instance to hold cached pools.
      */
     constructor(chainId, gasPriceProvider, cache) {
+        super();
         this.chainId = chainId;
         this.gasPriceProvider = gasPriceProvider;
         this.cache = cache;
-        this.GAS_KEY = (chainId) => `gasPrice-${chainId}`;
+        this.GAS_KEY = (chainId, blockNumber) => `gasPrice-${chainId}-${blockNumber}`;
     }
-    async getGasPrice() {
-        const cachedGasPrice = await this.cache.get(this.GAS_KEY(this.chainId));
+    async getGasPrice(latestBlockNumber, requestBlockNumber) {
+        // If block number is specified in the request, we have to use that block number find any potential cache hits.
+        // Otherwise, we can use the latest block number.
+        const targetBlockNumber = requestBlockNumber !== null && requestBlockNumber !== void 0 ? requestBlockNumber : latestBlockNumber;
+        const cachedGasPrice = await this.cache.get(this.GAS_KEY(this.chainId, targetBlockNumber));
         if (cachedGasPrice) {
             log.info({ cachedGasPrice }, `Got gas station price from local cache: ${cachedGasPrice.gasPriceWei}.`);
             return cachedGasPrice;
         }
-        log.info('Gas station price local cache miss.');
-        const gasPrice = await this.gasPriceProvider.getGasPrice();
-        await this.cache.set(this.GAS_KEY(this.chainId), gasPrice);
+        const gasPrice = await this.gasPriceProvider.getGasPrice(latestBlockNumber, requestBlockNumber);
+        await this.cache.set(this.GAS_KEY(this.chainId, targetBlockNumber), gasPrice);
         return gasPrice;
     }
 }
-//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2FjaGluZy1nYXMtcHJvdmlkZXIuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi9zcmMvcHJvdmlkZXJzL2NhY2hpbmctZ2FzLXByb3ZpZGVyLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUVBLE9BQU8sRUFBRSxHQUFHLEVBQUUsTUFBTSxhQUFhLENBQUM7QUFLbEM7Ozs7O0dBS0c7QUFDSCxNQUFNLE9BQU8seUJBQXlCO0lBR3BDOzs7OztPQUtHO0lBQ0gsWUFDWSxPQUFnQixFQUNsQixnQkFBbUMsRUFDbkMsS0FBdUI7UUFGckIsWUFBTyxHQUFQLE9BQU8sQ0FBUztRQUNsQixxQkFBZ0IsR0FBaEIsZ0JBQWdCLENBQW1CO1FBQ25DLFVBQUssR0FBTCxLQUFLLENBQWtCO1FBWHpCLFlBQU8sR0FBRyxDQUFDLE9BQWdCLEVBQUUsRUFBRSxDQUFDLFlBQVksT0FBTyxFQUFFLENBQUM7SUFZM0QsQ0FBQztJQUVHLEtBQUssQ0FBQyxXQUFXO1FBQ3RCLE1BQU0sY0FBYyxHQUFHLE1BQU0sSUFBSSxDQUFDLEtBQUssQ0FBQyxHQUFHLENBQUMsSUFBSSxDQUFDLE9BQU8sQ0FBQyxJQUFJLENBQUMsT0FBTyxDQUFDLENBQUMsQ0FBQztRQUV4RSxJQUFJLGNBQWMsRUFBRTtZQUNsQixHQUFHLENBQUMsSUFBSSxDQUNOLEVBQUUsY0FBYyxFQUFFLEVBQ2xCLDJDQUEyQyxjQUFjLENBQUMsV0FBVyxHQUFHLENBQ3pFLENBQUM7WUFFRixPQUFPLGNBQWMsQ0FBQztTQUN2QjtRQUVELEdBQUcsQ0FBQyxJQUFJLENBQUMscUNBQXFDLENBQUMsQ0FBQztRQUNoRCxNQUFNLFFBQVEsR0FBRyxNQUFNLElBQUksQ0FBQyxnQkFBZ0IsQ0FBQyxXQUFXLEVBQUUsQ0FBQztRQUMzRCxNQUFNLElBQUksQ0FBQyxLQUFLLENBQUMsR0FBRyxDQUFDLElBQUksQ0FBQyxPQUFPLENBQUMsSUFBSSxDQUFDLE9BQU8sQ0FBQyxFQUFFLFFBQVEsQ0FBQyxDQUFDO1FBRTNELE9BQU8sUUFBUSxDQUFDO0lBQ2xCLENBQUM7Q0FDRiJ9
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiY2FjaGluZy1nYXMtcHJvdmlkZXIuanMiLCJzb3VyY2VSb290IjoiIiwic291cmNlcyI6WyIuLi8uLi8uLi9zcmMvcHJvdmlkZXJzL2NhY2hpbmctZ2FzLXByb3ZpZGVyLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiJBQUVBLE9BQU8sRUFBRSxHQUFHLEVBQUUsTUFBTSxhQUFhLENBQUM7QUFHbEMsT0FBTyxFQUFZLGlCQUFpQixFQUFFLE1BQU0sc0JBQXNCLENBQUM7QUFFbkU7Ozs7O0dBS0c7QUFDSCxNQUFNLE9BQU8seUJBQTBCLFNBQVEsaUJBQWlCO0lBSTlEOzs7OztPQUtHO0lBQ0gsWUFDWSxPQUFnQixFQUNsQixnQkFBbUMsRUFDbkMsS0FBdUI7UUFFL0IsS0FBSyxFQUFFLENBQUM7UUFKRSxZQUFPLEdBQVAsT0FBTyxDQUFTO1FBQ2xCLHFCQUFnQixHQUFoQixnQkFBZ0IsQ0FBbUI7UUFDbkMsVUFBSyxHQUFMLEtBQUssQ0FBa0I7UUFaekIsWUFBTyxHQUFHLENBQUMsT0FBZ0IsRUFBRSxXQUFtQixFQUFFLEVBQUUsQ0FDMUQsWUFBWSxPQUFPLElBQUksV0FBVyxFQUFFLENBQUM7SUFjdkMsQ0FBQztJQUVlLEtBQUssQ0FBQyxXQUFXLENBQy9CLGlCQUF5QixFQUN6QixrQkFBMkI7UUFFM0IsK0dBQStHO1FBQy9HLGlEQUFpRDtRQUNqRCxNQUFNLGlCQUFpQixHQUFHLGtCQUFrQixhQUFsQixrQkFBa0IsY0FBbEIsa0JBQWtCLEdBQUksaUJBQWlCLENBQUM7UUFDbEUsTUFBTSxjQUFjLEdBQUcsTUFBTSxJQUFJLENBQUMsS0FBSyxDQUFDLEdBQUcsQ0FDekMsSUFBSSxDQUFDLE9BQU8sQ0FBQyxJQUFJLENBQUMsT0FBTyxFQUFFLGlCQUFpQixDQUFDLENBQzlDLENBQUM7UUFFRixJQUFJLGNBQWMsRUFBRTtZQUNsQixHQUFHLENBQUMsSUFBSSxDQUNOLEVBQUUsY0FBYyxFQUFFLEVBQ2xCLDJDQUEyQyxjQUFjLENBQUMsV0FBVyxHQUFHLENBQ3pFLENBQUM7WUFFRixPQUFPLGNBQWMsQ0FBQztTQUN2QjtRQUVELE1BQU0sUUFBUSxHQUFHLE1BQU0sSUFBSSxDQUFDLGdCQUFnQixDQUFDLFdBQVcsQ0FDdEQsaUJBQWlCLEVBQ2pCLGtCQUFrQixDQUNuQixDQUFDO1FBQ0YsTUFBTSxJQUFJLENBQUMsS0FBSyxDQUFDLEdBQUcsQ0FDbEIsSUFBSSxDQUFDLE9BQU8sQ0FBQyxJQUFJLENBQUMsT0FBTyxFQUFFLGlCQUFpQixDQUFDLEVBQzdDLFFBQVEsQ0FDVCxDQUFDO1FBRUYsT0FBTyxRQUFRLENBQUM7SUFDbEIsQ0FBQztDQUNGIn0=

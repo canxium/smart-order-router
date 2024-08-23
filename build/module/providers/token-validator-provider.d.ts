@@ -2,6 +2,7 @@ import { ChainId, Token } from '@uniswap/sdk-core';
 import { ICache } from './cache';
 import { IMulticallProvider } from './multicall-provider';
 import { ProviderConfig } from './provider';
+export declare const DEFAULT_ALLOWLIST: Set<string>;
 export declare enum TokenValidationResult {
     UNKN = 0,
     FOT = 1,

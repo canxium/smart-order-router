@@ -2,13 +2,14 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Protocol } from '@uniswap/router-sdk';
 import { ChainId, Currency, Token, TradeType } from '@uniswap/sdk-core';
 import { Pair } from '@uniswap/v2-sdk';
-import { Pool } from '@uniswap/v3-sdk';
+import { Pool as V3Pool } from '@uniswap/v3-sdk';
+import { Pool as V4Pool } from '@uniswap/v4-sdk';
 import { ITokenListProvider, ITokenProvider, ITokenValidatorProvider, TokenValidationResult } from '../../../providers';
 import { CurrencyAmount } from '../../../util';
-import { MixedRoute, V2Route, V3Route } from '../../router';
+import { SupportedRoutes } from '../../router';
 import { AlphaRouterConfig } from '../alpha-router';
 import { RouteWithValidQuote } from '../entities/route-with-valid-quote';
-import { CandidatePoolsBySelectionCriteria, V2CandidatePools, V3CandidatePools } from '../functions/get-candidate-pools';
+import { CandidatePoolsBySelectionCriteria, CrossLiquidityCandidatePools, SupportedCandidatePools, V2CandidatePools, V3CandidatePools } from '../functions/get-candidate-pools';
 import { IGasModel } from '../gas-models';
 import { GetQuotesResult, GetRoutesResult } from './model/results';
 /**
@@ -19,7 +20,7 @@ import { GetQuotesResult, GetRoutesResult } from './model/results';
  * @template CandidatePools
  * @template Route
  */
-export declare abstract class BaseQuoter<CandidatePools extends V2CandidatePools | V3CandidatePools | [V3CandidatePools, V2CandidatePools], Route extends V2Route | V3Route | MixedRoute> {
+export declare abstract class BaseQuoter<CandidatePools extends SupportedCandidatePools | [V3CandidatePools, V2CandidatePools, CrossLiquidityCandidatePools], Route extends SupportedRoutes, TCurrency extends Currency> {
     protected tokenProvider: ITokenProvider;
     protected chainId: ChainId;
     protected protocol: Protocol;
@@ -38,7 +39,7 @@ export declare abstract class BaseQuoter<CandidatePools extends V2CandidatePools
      * @param routingConfig
      * @returns Promise<GetRoutesResult<Route>>
      */
-    protected abstract getRoutes(tokenIn: Token, tokenOut: Token, candidatePools: CandidatePools, tradeType: TradeType, routingConfig: AlphaRouterConfig): Promise<GetRoutesResult<Route>>;
+    protected abstract getRoutes(tokenIn: TCurrency, tokenOut: TCurrency, candidatePools: CandidatePools, tradeType: TradeType, routingConfig: AlphaRouterConfig): Promise<GetRoutesResult<Route>>;
     /**
      * Public method that will fetch quotes for the combination of every route and every amount.
      *
@@ -68,6 +69,6 @@ export declare abstract class BaseQuoter<CandidatePools extends V2CandidatePools
      * @param gasModel the gasModel to be used for estimating gas cost
      * @param gasPriceWei instead of passing gasModel, gasPriceWei is used to generate a gasModel
      */
-    getRoutesThenQuotes(tokenIn: Token, tokenOut: Token, amount: CurrencyAmount, amounts: CurrencyAmount[], percents: number[], quoteToken: Token, candidatePools: CandidatePools, tradeType: TradeType, routingConfig: AlphaRouterConfig, gasModel?: IGasModel<RouteWithValidQuote>, gasPriceWei?: BigNumber): Promise<GetQuotesResult>;
-    protected applyTokenValidatorToPools<T extends Pool | Pair>(pools: T[], isInvalidFn: (token: Currency, tokenValidation: TokenValidationResult | undefined) => boolean): Promise<T[]>;
+    getRoutesThenQuotes(tokenIn: TCurrency, tokenOut: TCurrency, amount: CurrencyAmount, amounts: CurrencyAmount[], percents: number[], quoteToken: Token, candidatePools: CandidatePools, tradeType: TradeType, routingConfig: AlphaRouterConfig, gasModel?: IGasModel<RouteWithValidQuote>, gasPriceWei?: BigNumber): Promise<GetQuotesResult>;
+    protected applyTokenValidatorToPools<T extends V4Pool | V3Pool | Pair>(pools: T[], isInvalidFn: (token: Currency, tokenValidation: TokenValidationResult | undefined) => boolean): Promise<T[]>;
 }
