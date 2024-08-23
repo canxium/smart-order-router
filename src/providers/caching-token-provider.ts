@@ -13,6 +13,7 @@ import {
   CUSD_CELO,
   CUSD_CELO_ALFAJORES,
   DAI_ARBITRUM,
+  DAI_ARBITRUM_SEPOLIA,
   DAI_AVAX,
   DAI_BNB,
   DAI_CELO,
@@ -21,12 +22,15 @@ import {
   DAI_MOONBEAM,
   DAI_OPTIMISM,
   DAI_OPTIMISM_GOERLI,
+  DAI_OPTIMISM_SEPOLIA,
   DAI_POLYGON_MUMBAI,
   ETH_BNB,
   ITokenProvider,
   TokenAccessor,
+  USDB_BLAST,
   USDC_ARBITRUM,
   USDC_ARBITRUM_GOERLI,
+  USDC_ARBITRUM_SEPOLIA,
   USDC_AVAX,
   USDC_BASE,
   USDC_BNB,
@@ -35,6 +39,7 @@ import {
   USDC_MOONBEAM,
   USDC_OPTIMISM,
   USDC_OPTIMISM_GOERLI,
+  USDC_OPTIMISM_SEPOLIA,
   USDC_POLYGON,
   USDC_SEPOLIA,
   USDC_CANXIUM,
@@ -44,11 +49,13 @@ import {
   USDT_MAINNET,
   USDT_OPTIMISM,
   USDT_OPTIMISM_GOERLI,
+  USDT_OPTIMISM_SEPOLIA,
   WBTC_ARBITRUM,
   WBTC_MAINNET,
   WBTC_MOONBEAM,
   WBTC_OPTIMISM,
   WBTC_OPTIMISM_GOERLI,
+  WBTC_OPTIMISM_SEPOLIA,
   WMATIC_POLYGON,
   WMATIC_POLYGON_MUMBAI,
   WCAU_CANXIUM,
@@ -91,6 +98,12 @@ export const CACHE_SEED_TOKENS: {
     WBTC: WBTC_OPTIMISM_GOERLI,
     DAI: DAI_OPTIMISM_GOERLI,
   },
+  [ChainId.OPTIMISM_SEPOLIA]: {
+    USDC: USDC_OPTIMISM_SEPOLIA,
+    USDT: USDT_OPTIMISM_SEPOLIA,
+    WBTC: WBTC_OPTIMISM_SEPOLIA,
+    DAI: DAI_OPTIMISM_SEPOLIA,
+  },
   [ChainId.ARBITRUM_ONE]: {
     USDC: USDC_ARBITRUM,
     USDT: USDT_ARBITRUM,
@@ -99,6 +112,10 @@ export const CACHE_SEED_TOKENS: {
   },
   [ChainId.ARBITRUM_GOERLI]: {
     USDC: USDC_ARBITRUM_GOERLI,
+  },
+  [ChainId.ARBITRUM_SEPOLIA]: {
+    USDC: USDC_ARBITRUM_SEPOLIA,
+    DAI: DAI_ARBITRUM_SEPOLIA,
   },
   [ChainId.POLYGON]: {
     WMATIC: WMATIC_POLYGON,
@@ -148,13 +165,19 @@ export const CACHE_SEED_TOKENS: {
     USDC: USDC_BASE,
     WETH: WRAPPED_NATIVE_CURRENCY[ChainId.BASE],
   },
+  [ChainId.BLAST]: {
+    USDB: USDB_BLAST,
+    WETH: WRAPPED_NATIVE_CURRENCY[ChainId.BLAST],
+  },
+  [ChainId.ZORA]: {
+    WETH: WRAPPED_NATIVE_CURRENCY[ChainId.ZORA],
+  },
+  [ChainId.ZKSYNC]: {
+    WETH: WRAPPED_NATIVE_CURRENCY[ChainId.ZKSYNC],
+  },
   [ChainId.CANXIUM]: {
     WCAU: WCAU_CANXIUM,
     USDC: USDC_CANXIUM,
-  },
-  [ChainId.CANXIUM_CERIUM]: {
-    WCAU: WCAU_CANXIUM_CERIUM,
-    DAI: USDC_CANXIUM_CERIUM,
   },
   // Currently we do not have providers for Moonbeam mainnet or Gnosis testnet
 };
@@ -177,7 +200,7 @@ export class CachingTokenProviderWithFallback implements ITokenProvider {
     private tokenCache: ICache<Token>,
     protected primaryTokenProvider: ITokenProvider,
     protected fallbackTokenProvider?: ITokenProvider
-  ) {}
+  ) { }
 
   public async getTokens(_addresses: string[]): Promise<TokenAccessor> {
     const seedTokens = CACHE_SEED_TOKENS[this.chainId];
@@ -216,12 +239,10 @@ export class CachingTokenProviderWithFallback implements ITokenProvider {
 
     log.info(
       { addressesToFindInPrimary },
-      `Found ${addresses.length - addressesToFindInPrimary.length} out of ${
-        addresses.length
-      } tokens in local cache. ${
-        addressesToFindInPrimary.length > 0
-          ? `Checking primary token provider for ${addressesToFindInPrimary.length} tokens`
-          : ``
+      `Found ${addresses.length - addressesToFindInPrimary.length} out of ${addresses.length
+      } tokens in local cache. ${addressesToFindInPrimary.length > 0
+        ? `Checking primary token provider for ${addressesToFindInPrimary.length} tokens`
+        : ``
       }
       `
     );
@@ -248,12 +269,10 @@ export class CachingTokenProviderWithFallback implements ITokenProvider {
 
       log.info(
         { addressesToFindInSecondary },
-        `Found ${
-          addressesToFindInPrimary.length - addressesToFindInSecondary.length
-        } tokens in primary. ${
-          this.fallbackTokenProvider
-            ? `Checking secondary token provider for ${addressesToFindInSecondary.length} tokens`
-            : `No fallback token provider specified. About to return.`
+        `Found ${addressesToFindInPrimary.length - addressesToFindInSecondary.length
+        } tokens in primary. ${this.fallbackTokenProvider
+          ? `Checking secondary token provider for ${addressesToFindInSecondary.length} tokens`
+          : `No fallback token provider specified. About to return.`
         }`
       );
     }

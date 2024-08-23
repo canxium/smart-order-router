@@ -14,7 +14,7 @@ import {
   CacheMode,
   CachingTokenListProvider,
   CurrencyAmount,
-  DAI_MAINNET as DAI,
+  DAI_MAINNET as DAI, DEFAULT_TOKEN_PROPERTIES_RESULT,
   ETHGasStationInfoProvider,
   FallbackTenderlySimulator,
   MixedRoute,
@@ -27,6 +27,7 @@ import {
   SwapRouterProvider,
   SwapToRatioStatus,
   SwapType,
+  TokenPropertiesProvider,
   TokenProvider,
   UniswapMulticallProvider,
   USDC_MAINNET as USDC,
@@ -44,7 +45,7 @@ import {
   V3RouteWithValidQuote,
   V3SubgraphPool,
   V3SubgraphProvider,
-  WRAPPED_NATIVE_CURRENCY,
+  WRAPPED_NATIVE_CURRENCY
 } from '../../../../src';
 import { ProviderConfig } from '../../../../src/providers/provider';
 import { TokenValidationResult, TokenValidatorProvider, } from '../../../../src/providers/token-validator-provider';
@@ -101,14 +102,24 @@ describe('alpha router', () => {
 
   let mockBlockTokenListProvider: sinon.SinonStubbedInstance<CachingTokenListProvider>;
   let mockTokenValidatorProvider: sinon.SinonStubbedInstance<TokenValidatorProvider>;
+  let mockTokenPropertiesProvider: sinon.SinonStubbedInstance<TokenPropertiesProvider>;
 
   let mockFallbackTenderlySimulator: sinon.SinonStubbedInstance<FallbackTenderlySimulator>;
+
 
   let inMemoryRouteCachingProvider: InMemoryRouteCachingProvider;
 
   let alphaRouter: AlphaRouter;
 
   const ROUTING_CONFIG: AlphaRouterConfig = {
+    v4PoolSelection: {
+      topN: 0,
+      topNDirectSwaps: 0,
+      topNTokenInOut: 0,
+      topNSecondHop: 0,
+      topNWithEachBaseToken: 0,
+      topNWithBaseToken: 0,
+    },
     v3PoolSelection: {
       topN: 0,
       topNDirectSwaps: 0,
@@ -375,6 +386,13 @@ describe('alpha router', () => {
       getValidationByToken: () => TokenValidationResult.UNKN,
     });
 
+    mockTokenPropertiesProvider = sinon.createStubInstance(
+      TokenPropertiesProvider
+    )
+    mockTokenPropertiesProvider.getTokensProperties.resolves({
+      '0x0': DEFAULT_TOKEN_PROPERTIES_RESULT
+    })
+
     mockFallbackTenderlySimulator = sinon.createStubInstance(
       FallbackTenderlySimulator
     );
@@ -402,7 +420,8 @@ describe('alpha router', () => {
       swapRouterProvider: mockSwapRouterProvider,
       tokenValidatorProvider: mockTokenValidatorProvider,
       simulator: mockFallbackTenderlySimulator,
-      routeCachingProvider: inMemoryRouteCachingProvider
+      routeCachingProvider: inMemoryRouteCachingProvider,
+      tokenPropertiesProvider: mockTokenPropertiesProvider,
     });
   });
 
@@ -504,6 +523,8 @@ describe('alpha router', () => {
           gasPriceWei: mockGasPriceWeiBN,
           poolProvider: sinon.match.any,
           token: WRAPPED_NATIVE_CURRENCY[1],
+          l2GasDataProvider: sinon.match.any,
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
       expect(
@@ -905,8 +926,10 @@ describe('alpha router', () => {
         mockV2GasModelFactory.buildGasModel.calledWith({
           chainId: 1,
           gasPriceWei: mockGasPriceWeiBN,
+          l2GasDataProvider: sinon.match.any,
           poolProvider: sinon.match.any,
           token: WRAPPED_NATIVE_CURRENCY[1],
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
 
@@ -1090,8 +1113,10 @@ describe('alpha router', () => {
         mockV2GasModelFactory.buildGasModel.calledWith({
           chainId: 1,
           gasPriceWei: mockGasPriceWeiBN,
+          l2GasDataProvider: sinon.match.any,
           poolProvider: sinon.match.any,
           token: WRAPPED_NATIVE_CURRENCY[1],
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
 
@@ -1499,8 +1524,10 @@ describe('alpha router', () => {
         mockV2GasModelFactory.buildGasModel.calledWith({
           chainId: 1,
           gasPriceWei: mockGasPriceWeiBN,
+          l2GasDataProvider: sinon.match.any,
           poolProvider: sinon.match.any,
           token: WRAPPED_NATIVE_CURRENCY[1],
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
 
@@ -1871,8 +1898,10 @@ describe('alpha router', () => {
         mockV2GasModelFactory.buildGasModel.calledWith({
           chainId: 1,
           gasPriceWei: mockGasPriceWeiBN,
+          l2GasDataProvider: sinon.match.any,
           poolProvider: sinon.match.any,
           token: USDC,
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
       expect(
@@ -2033,8 +2062,10 @@ describe('alpha router', () => {
         mockV2GasModelFactory.buildGasModel.calledWith({
           chainId: 1,
           gasPriceWei: mockGasPriceWeiBN,
+          l2GasDataProvider: sinon.match.any,
           poolProvider: sinon.match.any,
           token: USDC,
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
       expect(
@@ -2112,8 +2143,10 @@ describe('alpha router', () => {
         mockV2GasModelFactory.buildGasModel.calledWith({
           chainId: 1,
           gasPriceWei: mockGasPriceWeiBN,
+          l2GasDataProvider: sinon.match.any,
           poolProvider: sinon.match.any,
           token: USDC,
+          providerConfig: sinon.match.any,
         })
       ).toBeTruthy();
       expect(
